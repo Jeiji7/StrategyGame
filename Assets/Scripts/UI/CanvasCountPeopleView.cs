@@ -12,22 +12,24 @@ public class CanvasCountPeopleView : MonoBehaviour
     public UnityEvent OnUpdatePeopleUI;
     private DateManager dateManager;
 
+
+    
     private void Awake()
     {
-
         dateManager = FindFirstObjectByType<DateManager>();
+        landWork = transform.parent.GetComponent<LandWork>();
+        countPeople = transform.Find("CountText").GetComponent<TMP_Text>();
         dateManager.OnLandWork.AddListener(UpdatePeopleText);
     }
     void Start()
     {
-        landWork = transform.parent.GetComponent<LandWork>();
-        countPeople = transform.Find("CountText").GetComponent<TMP_Text>();
         UpdatePeopleText();
     }
+
     private void UpdatePeopleText()
     {
-        countPeople.text = landWork.people.ToString();
         OnUpdatePeopleUI.Invoke();
+        countPeople.text = landWork.people.ToString();
     }
     
 }

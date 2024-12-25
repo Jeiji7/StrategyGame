@@ -19,20 +19,24 @@ public class DataListLandState : MonoBehaviour
     [SerializeField] private TMP_Text _foodDayCount;
     [SerializeField] private TMP_Text _goldDayCount;
 
+    private LandWork _currentLandWork;
+
     public ObjectSelectionManager objectSelectionManager;
+
     private void Awake()
     {
         GlobalEventManager.LvlUpButtonActive.AddListener(ActiveLvlUp);
         GlobalEventManager.LvlUpButtonNotActive.AddListener(NotActiveLvlUp);
     }
-   
+
     public void LvlUpPeopleButton()
     {
-        GlobalEventManager.UpDataPeople.Invoke();
+        _currentLandWork.MakePeopleDayCount();
     }
+
     public void LvlUpGoldButton()
     {
-        GlobalEventManager.UpDataGold.Invoke();
+        _currentLandWork.MakeGoldDatCount();
     }
     private void ActiveLvlUp()
     {
@@ -46,13 +50,15 @@ public class DataListLandState : MonoBehaviour
     }
     private void Update()
     {
-        SetLandData(objectSelectionManager.GetCurrentLandWork());
+        _currentLandWork = objectSelectionManager.GetCurrentLandWork();
+        SetLandData(_currentLandWork);
 
     }
     public void SetLandData(LandWork landWork)
     {
         if (landWork != null)
         {
+            _currentLandWork = landWork;
             UpdateData(
                 landWork.nameUnit,
                 landWork.people,

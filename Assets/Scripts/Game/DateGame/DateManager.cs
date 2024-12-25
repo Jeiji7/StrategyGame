@@ -9,18 +9,22 @@ using UnityEngine.Events;
 public class DateManager : MonoBehaviour
 {
     [Header("ResourceGamePlay")]
-    public UnityEvent OnLandWork;
+    public UnityEvent OnLandWork = new();
+    public UnityEvent OnFifhtDayStart = new();
+    public UnityEvent OnTenthDayStart = new();
 
     [Header("UI")]
-    [SerializeField]private TMP_Text dateText;
+    [SerializeField] private TMP_Text dateText;
     [SerializeField] private Button _pause;
     [SerializeField] public int _pauseCount = 0;
     [SerializeField] private Button _start;
     [SerializeField] private Button _acceleration;
     [Header("Logical")]
-    private DateTime _timeOfPeace = new DateTime(420,1,1);
+    private DateTime _timeOfPeace = new DateTime(420, 1, 1);
     [SerializeField] public float _oneDayTime = 3f;
     [SerializeField] private float _timer = 0f;
+
+    private int _totalDayCount;
     private void Start()
     {
         DateTextUpdate();
@@ -33,7 +37,7 @@ public class DateManager : MonoBehaviour
         if (_pauseCount == 0)
             CommonDateSpeed();
         else
-            Debug.Log("Мы на паузе юху");
+            return;
     }
 
     private void CommonDateSpeed()
@@ -42,10 +46,24 @@ public class DateManager : MonoBehaviour
         if (_timer >= _oneDayTime)
         {
             _timeOfPeace = _timeOfPeace.AddDays(1);
+            _totalDayCount += 1;
+            Debug.LogError($"_totalDayCount {_totalDayCount}");
+            if (_totalDayCount % 15 == 0)
+            {
+                //Debug.LogError($"OnFifhtDayStart");
+                OnFifhtDayStart.Invoke();
+            }
+            if (_totalDayCount % 30 == 0)
+            {
+                //Debug.LogError($"OnTenthDayStart");
+                OnTenthDayStart.Invoke();
+            }
+
+
             OnLandWork.Invoke();
             //событие сюда попробывать
             _timer = 0f;
-            if(dateText != null)
+            if (dateText != null)
             {
                 DateTextUpdate();
             }

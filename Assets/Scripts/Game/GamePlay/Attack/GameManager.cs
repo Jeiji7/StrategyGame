@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -8,9 +6,15 @@ public class GameManager : MonoBehaviour
     public static GameObject StartObjectAttack = null;
     public static GameObject TargetObjectAttack = null;
 
+    public static GameObject AIStartObjectAttack = null;
+    public static GameObject AITargetObjectAttack = null;
+
+
     private void Start()
     {
         StartObjectAttack = null;
         TargetObjectAttack = null;
+        AIStartObjectAttack = null;
+        AITargetObjectAttack = null;
     }
 }

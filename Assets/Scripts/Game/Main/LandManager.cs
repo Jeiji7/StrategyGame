@@ -1,11 +1,9 @@
-using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class LandManager : MonoBehaviour
 {
-    [SerializeField] private List<LandWork> landList = new List<LandWork>();
+    public List<LandWork> landList = new List<LandWork>();
     private void Awake()
     {
         for (int i = 0; i < transform.childCount; i++)

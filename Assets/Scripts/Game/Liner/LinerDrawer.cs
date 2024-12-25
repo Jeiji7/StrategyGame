@@ -7,7 +7,7 @@ public class LinerDrawer : MonoBehaviour
 {
     public float distance;
     [SerializeField] private GameObject solder;
-    public UnityEvent<Transform, Transform> StartMoveSolder;
+    public UnityEvent<Transform, Transform, bool> StartMoveSolder;
 
     [SerializeField]private LineRenderer lineRenderer;
     private void Awake()
@@ -27,7 +27,7 @@ public class LinerDrawer : MonoBehaviour
 
     }
 
-    public void LinerDraw(Transform startObject, Transform targetObject)
+    public void LinerDraw(Transform startObject, Transform targetObject, bool isAI)
     {
         distance = Vector3.Distance(startObject.position, targetObject.position);
         if (startObject != null && targetObject != null)
@@ -43,7 +43,7 @@ public class LinerDrawer : MonoBehaviour
                 lineRenderer.material.mainTextureScale = new Vector2(textureRepeatCount, 1f);
             }
             Instantiate(solder, startObject.position, Quaternion.identity, transform.transform);
-            StartMoveSolder.Invoke(startObject, targetObject);
+            StartMoveSolder.Invoke(startObject, targetObject, isAI);
         }
     }
 }

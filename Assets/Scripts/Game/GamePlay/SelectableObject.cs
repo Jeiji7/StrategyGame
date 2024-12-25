@@ -25,11 +25,7 @@ public class SelectableObject : MonoBehaviour
         Deselect();
     }
 
-    private void Awake()
-    {
-        GlobalEventManager.UpDataPeople.AddListener(LvlUpPeople);
-        GlobalEventManager.UpDataGold.AddListener(LvlUpGold);
-    }
+
     public void SpriteRenderUse()
     {
         landWork.owner = landWork.PlayerLand.numberOwner;

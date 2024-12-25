@@ -11,6 +11,6 @@ public class GlobalEventManager : MonoBehaviour
     public static UnityEvent LvlUpButtonActive = new();
     public static UnityEvent LvlUpButtonNotActive = new();
 
-    public static UnityEvent UpDataPeople = new();
-    public static UnityEvent UpDataGold = new();
+    public static bool isPlayingMusic = true;
+    public static int isActiveCheck = 0;
 }

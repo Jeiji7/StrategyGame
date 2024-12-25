@@ -1,9 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class AttackLand : MonoBehaviour
 {
@@ -14,6 +10,9 @@ public class AttackLand : MonoBehaviour
     public GameObject attackButtonObj;
     public Button goldButton;
     public GameObject goldButtonObj;
+
+    public Button peopleButton;
+    public GameObject peopleButtonObj;
     public GameObject LinerAttack;
 
     private void Update()
@@ -46,7 +45,7 @@ public class AttackLand : MonoBehaviour
             {
                 if (land.owner == 1)
                 {
-                    goldButtonObj.SetActive(true);
+                    //goldButtonObj.SetActive(true);
                     attackButtonObj.SetActive(false);
                     GameManager.TargetObjectAttack = clickedObject;
                     player2 = GameManager.TargetObjectAttack;
@@ -54,8 +53,15 @@ public class AttackLand : MonoBehaviour
                 }
                 else
                 {
+                    if (land.name == "Empty")
+                    {
+                        attackButtonObj.SetActive(false);
+                        GameManager.StartObjectAttack = null;
+                        GameManager.TargetObjectAttack = null;
+                        return;
+                    }
                     attackButtonObj.SetActive(true);
-                    goldButtonObj.SetActive(false);
+                    //goldButtonObj.SetActive(false);
                     GameManager.TargetObjectAttack = clickedObject;
                     player2 = GameManager.TargetObjectAttack;
                     Debug.Log($"”становлена оборон€юща€с€ территори€: {clickedObject.name}");
@@ -81,22 +87,37 @@ public class AttackLand : MonoBehaviour
     private void Start()
     {
         if (attackButton != null)
-            attackButton.onClick.AddListener(() => { Attack(player, player2); });
-        if(goldButton != null)
-            goldButton.onClick.AddListener(()=> { TransferGold(player, player2); });
+            attackButton.onClick.AddListener(() => { Attack(player, player2, false); });
+        //if(goldButton != null)
+        //    goldButton.onClick.AddListener(()=> { TransferGold(player, player2, false); });
+        //if (peopleButton != null)
+        //    peopleButton.onClick.AddListener(() => { PeopleCrosing(player, player2, false); });
     }
-    public void Attack(GameObject playerOne, GameObject playerTwo)
+
+
+    public void Attack(GameObject playerOne, GameObject playerTwo , bool isAI)
     {
         GameObject currentAttack = Instantiate(LinerAttack, new Vector3(0, 0, -5f), Quaternion.identity, transform.transform);
         LinerDrawer linerDrawer = currentAttack.GetComponent<LinerDrawer>();
-        linerDrawer.LinerDraw(playerOne.transform, playerTwo.transform);
+        linerDrawer.LinerDraw(playerOne.transform, playerTwo.transform,isAI);
         attackButtonObj.SetActive(false);
+        //goldButtonObj.SetActive(false);
     }
-    public void TransferGold(GameObject playerOne, GameObject playerTwo)
-    {
-        GameObject currentAttack = Instantiate(LinerAttack, new Vector3(0, 0, -5f), Quaternion.identity, transform.transform);
-        LinerDrawer linerDrawer = currentAttack.GetComponent<LinerDrawer>();
-        linerDrawer.LinerDraw(playerOne.transform, playerTwo.transform);
-        goldButtonObj.SetActive(false);
-    }
+    //public void TransferGold(GameObject playerOne, GameObject playerTwo, bool isAI)
+    //{
+    //    GameObject currentAttack = Instantiate(LinerAttack, new Vector3(0, 0, -5f), Quaternion.identity, transform.transform);
+    //    LinerDrawer linerDrawer = currentAttack.GetComponent<LinerDrawer>();
+    //    linerDrawer.LinerDraw(playerOne.transform, playerTwo.transform, isAI);
+    //    attackButtonObj.SetActive(false);
+    //    goldButtonObj.SetActive(false);
+    //    peopleButtonObj.SetActive(false);
+    //}
+    //public void PeopleCrosing(GameObject playerOne, GameObject playerTwo, bool isAI)
+    //{
+    //    GameObject currentAttack = Instantiate(LinerAttack, new Vector3(0, 0, -5f), Quaternion.identity, transform.transform);
+    //    LinerDrawer linerDrawer = currentAttack.GetComponent<LinerDrawer>();
+    //    linerDrawer.LinerDraw(playerOne.transform, playerTwo.transform, isAI);
+    //    peopleButtonObj.SetActive(false);
+    //    goldButtonObj.SetActive(false);
+    //}
 }

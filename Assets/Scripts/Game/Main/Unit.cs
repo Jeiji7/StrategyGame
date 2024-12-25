@@ -13,24 +13,24 @@ public class Unit : MonoBehaviour
     private int _goldDayCount;
     public int owner;
     public bool activeUI = true;
-   
+
     public int peopleDayCount
     {
         get { return _peopleDayCount; }
         set
         {
-            if (value >= 4)
+            if (value >= 7)
                 Debug.LogError("максимальный уровенень");
             else
                 _peopleDayCount = value;
         }
-    }// прибавление людей на область
+    }
     public int foodDayCount
     {
         get { return _foodDayCount; }
         set
         {
-            if (value < 0 || value >= 4)
+            if (value < 0 || value >= 7)
                 Debug.LogError("максимальный уровенень");
             else
                 _foodDayCount = value;
@@ -41,22 +41,32 @@ public class Unit : MonoBehaviour
         get { return _goldDayCount; }
         set
         {
-            if (value < 0 || value >= 4)
+            if (value < 0 || value >= 7)
                 Debug.LogError($"максимальный уровенень {_goldDayCount}");
             else
                 _goldDayCount = value;
         }
     }
-    
+
     public int people
     {
         get { return _people; }
         set
         {
-            if (value <= 0 || value >= 10001)
+            if (value < 0 || value > 10001)
             {
-                Debug.Log($"Ошибка в количестве людей {value}");
-                return;
+                if (value < 0)
+                {
+                    people = 0;
+                    Debug.Log($"Ошибка в количестве людей {value}");
+                    return;
+                }
+                if(value> 10001)
+                {
+                    people = 10000;
+                    Debug.Log($"Ошибка в количестве людей {value}");
+                    return;
+                }
             }
             else
             {

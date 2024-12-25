@@ -1,12 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.Tracing;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public class MovingSolder : MonoBehaviour
 {
+    [Header("Ai Object")]
+    private LandWork AIlandAttack;
+    private LandWork AIlandTarget;
+    private SelectableObject AIlandAttackSprite;
+    private SelectableObject AIlandTargetSprite;
+
     public Transform startObject; // Ваш объект с людьми
     public Transform targetObject; // Вражеский объект
-    [SerializeField]private float _moveSpeed = 5;
+    private bool isAiSolder;
+    [SerializeField] private float _moveSpeed = 5;
     private float _startTime; // Время начала движения
     private bool _isMoving = false; // Флаг для контроля движения
     public LinerDrawer _drawer;
@@ -15,7 +24,7 @@ public class MovingSolder : MonoBehaviour
         _drawer = transform.parent.GetComponent<LinerDrawer>();
         _drawer.StartMoveSolder.AddListener(StartMove);
     }
-   
+
     private void Update()
     {
         // Если движение началось, продолжаем двигаться
@@ -38,25 +47,78 @@ public class MovingSolder : MonoBehaviour
             }
         }
     }
-    public void StartMove(Transform oneLand,Transform twoLand)
+
+
+
+    public void StartMove(Transform oneLand, Transform twoLand, bool isAi)
     {
         startObject = oneLand;
         targetObject = twoLand;
         _startTime = Time.time;
         _isMoving = true;
+        isAiSolder = isAi;
+        if (isAi)
+        {
+            AIlandAttack = GameManager.AIStartObjectAttack.GetComponent<LandWork>(); 
+            AIlandTarget = GameManager.AITargetObjectAttack.GetComponent<LandWork>();
+            AIlandAttackSprite = GameManager.AIStartObjectAttack.GetComponent<SelectableObject>();
+            AIlandTargetSprite = GameManager.AITargetObjectAttack.GetComponent<SelectableObject>();
+        }
     }
     private IEnumerator DestroyLiner()
     {
-        LandWork landAttack = GameManager.StartObjectAttack.GetComponent<LandWork>();
-        LandWork landTarget = GameManager.TargetObjectAttack.GetComponent<LandWork>();
-        SelectableObject landTargetSprite = GameManager.TargetObjectAttack.GetComponent<SelectableObject>();
-        SelectableObject landAttackSprite = GameManager.TargetObjectAttack.GetComponent<SelectableObject>();
-        landTarget.PlayerLand = landAttack.PlayerLand;
-        landTargetSprite.SpriteRenderUse();
-        landTargetSprite.Deselect();
-        landAttackSprite.SpriteRenderUse();
-        landAttackSprite.Deselect();
-        yield return new WaitForSeconds(3f);
+        if (isAiSolder == false)
+        {
+            LandWork landAttack = GameManager.StartObjectAttack.GetComponent<LandWork>();
+            LandWork landTarget = GameManager.TargetObjectAttack.GetComponent<LandWork>();
+            SelectableObject landAttackSprite = GameManager.StartObjectAttack.GetComponent<SelectableObject>();
+            SelectableObject landTargetSprite = GameManager.TargetObjectAttack.GetComponent<SelectableObject>();
+            ResultAttack(landAttack, landTarget, landAttackSprite, landTargetSprite);
+
+        }
+        else
+        {
+            ResultAttack(AIlandAttack, AIlandTarget, AIlandAttackSprite, AIlandTargetSprite);
+
+        }
+        yield return new WaitForSeconds(1f);
         Destroy(_drawer.gameObject);
     }
+
+    private void ResultAttack(LandWork attackerLand, LandWork targetLand, SelectableObject landAttackSprite, SelectableObject landTargetSprite)
+    {
+        int landPeopleBeofAttack = attackerLand.people;
+        int landPeopleBeofTarget = targetLand.people;
+        if (targetLand.people >= attackerLand.people)
+        {
+            Debug.Log($"Земля не завоевана");
+            attackerLand.people = 0;
+            targetLand.people = landPeopleBeofTarget - landPeopleBeofAttack;
+            landTargetSprite.Deselect();
+            landAttackSprite.Deselect();
+        }
+        else
+        {
+            Debug.Log($"Земля Завоевана");
+            attackerLand.people = 0;
+            targetLand.people = landPeopleBeofAttack - landPeopleBeofTarget;
+            targetLand.PlayerLand = attackerLand.PlayerLand;
+            landTargetSprite.SpriteRenderUse();
+            landTargetSprite.Deselect();
+            landAttackSprite.SpriteRenderUse();
+            landAttackSprite.Deselect();
+        }
+        //if (isAiSolder == false)
+        //{
+        //    GameManager.StartObjectAttack = null;
+        //    GameManager.TargetObjectAttack = null;
+        //}
+        //else
+        //{
+        //    GameManager.AIStartObjectAttack = null;
+        //    GameManager.AITargetObjectAttack = null;
+        //}
+
+    }
+
 }
